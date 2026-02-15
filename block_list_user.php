@@ -93,6 +93,7 @@ class block_list_user extends block_base {
      */
     public function applicable_formats() {
         return [
+            'my' => true,
         ];
     }
 
