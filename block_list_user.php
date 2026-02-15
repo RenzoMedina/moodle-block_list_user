@@ -55,8 +55,11 @@ class block_list_user extends block_base {
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = 'Please define the content text in /blocks/list_user/block_list_user.php.';
-            $this->content->text = $text;
+            global $OUTPUT;
+            $data = [
+                'url' => "#",
+            ];
+            $this->content->text = $OUTPUT->render_from_template('block_list_user/button', $data);
         }
 
         return $this->content;
@@ -102,6 +105,14 @@ class block_list_user extends block_base {
      * @return bool
      */
     function _self_test() {
+        return true;
+    }
+    
+    /**
+     * Summary of hide_header
+     * @return bool
+     */
+    public function hide_header() {
         return true;
     }
 }

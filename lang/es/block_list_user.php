@@ -28,3 +28,4 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'Listar Usuario';
 $string['list_user:addinstance'] = 'Agregar un nuevo bloque de Listar Usuario';
 $string['list_user:myaddinstance'] = 'Agregar un nuevo bloque de Listar Usuario a la página Mi Moodle';
+$string['showusers'] = 'Mostrar usuarios';
