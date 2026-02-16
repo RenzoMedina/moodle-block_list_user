@@ -55,9 +55,9 @@ class block_list_user extends block_base {
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            global $OUTPUT;
+            global $OUTPUT, $CFG;
             $data = [
-                'url' => "#",
+                'url' => $CFG->wwwroot . '/blocks/list_user/index.php',
             ];
             $this->content->text = $OUTPUT->render_from_template('block_list_user/button', $data);
         }
