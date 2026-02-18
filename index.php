@@ -28,11 +28,40 @@ $PAGE->set_title(get_string('pluginname', 'block_list_user'));
 $PAGE->set_heading(get_string('pluginname', 'block_list_user'));
 
 $searchform = new \block_list_user\form\search_form();
+$searchfield = optional_param('searchfield', 'firstname', PARAM_TEXT);
+$searchvalue = optional_param('search', '', PARAM_TEXT);
+$params = [
+    'deleted'=>0,
+    'suspended' => 0,
+];
+$page = optional_param('page', 0, PARAM_INT);
+$perpage = 10;
+$offset = $page * $perpage;
+$countsql = "SELECT COUNT(id) FROM {user} WHERE deleted = :deleted AND suspended = :suspended";
+$sql = "SELECT id, firstname, lastname, email FROM {user} WHERE deleted = :deleted AND suspended = :suspended";
+if (!empty($searchvalue)) {
+    $searchcondition = " AND " . $DB->sql_like($searchfield, ':search', false);
+    $sql .= $searchcondition;
+    $countsql .= $searchcondition;
+    $params['search'] = '%' . $DB->sql_like_escape($searchvalue) . '%';
+}
+
+$sql .= " ORDER BY firstname ASC, lastname ASC";
+$users = $DB->get_records_sql($sql, $params, $offset, $perpage);
+$totalusers = $DB->count_records_sql($countsql, $params);
+$paginationhtml = '';
+if ($totalusers > $perpage) {
+    $baseurl = new moodle_url('/blocks/list_user/index.php',['search' => $searchvalue, 'searchfield' => $searchfield]);
+    $pagingbar = new paging_bar($totalusers, $page, $perpage, $baseurl, 'page');
+    $paginationhtml = $OUTPUT->render($pagingbar);
+};
 echo $OUTPUT->header();
 $templatedata = [
     'form_search' => $searchform->render(),
     'return_url' => new moodle_url('/my/'),
-    'users' => [],
+    'users' => array_values($users),
+    'haspagination' => !empty($paginationhtml),
+    'pagination' => $paginationhtml,
 ];
 echo $OUTPUT->render_from_template('block_list_user/main', $templatedata);
 echo $OUTPUT->footer();

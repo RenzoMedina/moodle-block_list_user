@@ -15,14 +15,17 @@ This file is part of Moodle - http://moodle.org/
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>;.
 }}
 <div class="container-fluid">
+
     <div class="row">
         <div class="col-md-8">
             {{{form_search}}}
         </div>
+
         <div class="col-md-4 text-end">
             <a class="btn btn-secondary" href="{{return_url}}">{{#str}}return, block_list_user{{/str}}</a>
         </div>
     </div>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -50,4 +53,12 @@ This file is part of Moodle - http://moodle.org/
         {{/users}}
         </tbody>
     </table>
+
+    {{#haspagination}}
+    <div class="row mt-3">
+        <div class="col-12">
+            {{{pagination}}}
+        </div>
+    </div>
+    {{/haspagination}}
 </div>
