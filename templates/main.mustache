@@ -22,7 +22,7 @@ This file is part of Moodle - http://moodle.org/
         </div>
 
         <div class="col-md-4 text-end">
-            <a class="btn btn-secondary" href="{{return_url}}">{{#str}}return, block_list_user{{/str}}</a>
+            <a class="btn btn-info" href="{{return_url}}"> <i class="fa fa-arrow-left"></i> {{#str}}return, block_list_user{{/str}}</a>
         </div>
     </div>
 
@@ -61,4 +61,11 @@ This file is part of Moodle - http://moodle.org/
         </div>
     </div>
     {{/haspagination}}
+
+    <div class="row mt-3">
+        <div class="col-12 text-start">
+            <a class="btn btn-success" href="{{download_file}}">{{#str}}downloadexcel, block_list_user{{/str}} <i class="fa fa-download"></i></a>
+        </div>
+    </div>
+
 </div>
