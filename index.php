@@ -30,6 +30,7 @@ $PAGE->set_heading(get_string('pluginname', 'block_list_user'));
 $searchform = new \block_list_user\form\search_form();
 $searchfield = optional_param('searchfield', 'firstname', PARAM_TEXT);
 $searchvalue = optional_param('search', '', PARAM_TEXT);
+$download = optional_param('download', '', PARAM_TEXT);
 $params = [
     'deleted'=>0,
     'suspended' => 0,
@@ -54,14 +55,46 @@ if ($totalusers > $perpage) {
     $baseurl = new moodle_url('/blocks/list_user/index.php',['search' => $searchvalue, 'searchfield' => $searchfield]);
     $pagingbar = new paging_bar($totalusers, $page, $perpage, $baseurl, 'page');
     $paginationhtml = $OUTPUT->render($pagingbar);
-};
-echo $OUTPUT->header();
+}
+if (!empty($download)) {
+    $validformats = ['csv', 'excel', 'ods'];
+    if (!in_array($download, $validformats)) {
+        $download = 'csv';
+    }
+    $users = $DB->get_records_sql($sql, $params);
+    $exportdata = [];
+    foreach ($users as $user) {
+        $exportdata[] = [
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'idnumber' => $user->idnumber ?? '',
+            'username' => $user->username,
+        ];
+    }
+    $columns = [
+        'firstname' => get_string('firstname'),
+        'lastname' => get_string('lastname'),
+        'email' => get_string('email'),
+        'idnumber' => get_string('idnumber'),
+        'username' => get_string('username'),
+    ];
+    $filename = 'users_' . date('Ymd');
+    \core\dataformat::download_data($filename, $download, $columns, $exportdata);
+    exit;
+}
 $templatedata = [
     'form_search' => $searchform->render(),
     'return_url' => new moodle_url('/my/'),
     'users' => array_values($users),
     'haspagination' => !empty($paginationhtml),
     'pagination' => $paginationhtml,
+    'download_file' => (new moodle_url('/blocks/list_user/index.php',[
+        'search' => $searchvalue,
+        'searchfield' => $searchfield,
+        'download' => 'excel',
+        ]))->out(false),
 ];
+echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('block_list_user/main', $templatedata);
 echo $OUTPUT->footer();
